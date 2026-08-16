@@ -11,6 +11,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -18,7 +19,9 @@ import java.util.Map;
 /** {@code /endscheduler <status|open|lock|reload>} */
 public final class EndSchedulerCommand implements CommandExecutor, TabCompleter {
 
-    private static final List<String> SUBCOMMANDS = List.of("status", "open", "lock", "reload");
+    private static final List<String> SUBCOMMANDS = List.of("status", "open", "lock", "settime", "reload");
+    private static final List<String> DAYS = List.of("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY",
+            "FRIDAY", "SATURDAY", "SUNDAY");
 
     private final EndSchedulerPlugin plugin;
 
@@ -54,6 +57,26 @@ public final class EndSchedulerCommand implements CommandExecutor, TabCompleter 
                     return true;
                 }
                 send(sender, "admin-locked", Msg.map(
+                        "time", TimeFormat.describe(plugin.gate().secondsUntilOpen()),
+                        "date", plugin.gate().describeTarget()));
+            }
+            case "settime" -> {
+                if (args.length < 2) {
+                    send(sender, "admin-settime-usage", Msg.map("label", label));
+                    return true;
+                }
+                String spec = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+                String problem = plugin.gate().setOpenTime(spec);
+                if (problem != null) {
+                    send(sender, "admin-settime-failed", Msg.map("reason", problem));
+                    send(sender, "admin-settime-usage", Msg.map("label", label));
+                    return true;
+                }
+                // Anyone already inside is moved out, since the End just re-locked.
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    plugin.gate().evict(player);
+                }
+                send(sender, "admin-settime", Msg.map(
                         "time", TimeFormat.describe(plugin.gate().secondsUntilOpen()),
                         "date", plugin.gate().describeTarget()));
             }
@@ -97,6 +120,19 @@ public final class EndSchedulerCommand implements CommandExecutor, TabCompleter 
                 if (sub.startsWith(prefix)) {
                     out.add(sub);
                 }
+            }
+            return out;
+        }
+        if (args[0].equalsIgnoreCase("settime")) {
+            if (args.length == 2) {
+                String prefix = args[1].toUpperCase(Locale.ROOT);
+                for (String day : DAYS) {
+                    if (day.startsWith(prefix)) {
+                        out.add(day);
+                    }
+                }
+            } else if (args.length == 3) {
+                out.add("18:00");
             }
         }
         return out;

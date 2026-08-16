@@ -54,7 +54,13 @@ public final class EndGate {
         state.load();
         Instant now = Instant.now();
 
-        if (state.matches(settings.openTime(), settings.zoneRaw())) {
+        if (state.isManual()) {
+            // Set in-game with /endscheduler settime; outranks config.yml until
+            // /endscheduler lock re-arms from config.
+            openAt = Instant.ofEpochMilli(state.openAtMillis());
+            plugin.getLogger().info("Using the opening time set in-game "
+                    + "(/endscheduler lock re-arms from config.yml instead).");
+        } else if (state.matches(settings.openTime(), settings.zoneRaw())) {
             openAt = Instant.ofEpochMilli(state.openAtMillis());
         } else {
             try {
@@ -207,6 +213,34 @@ public final class EndGate {
                 player.playSound(player.getLocation(), settings.openingSound(), 1.0F, 1.0F);
             }
         }
+    }
+
+    /**
+     * Sets a new opening time from in-game and re-locks. The time is stored as a manual
+     * override, so it survives restarts and is not overwritten by config.yml.
+     *
+     * @return null on success, or a short reason the value was rejected
+     */
+    public String setOpenTime(String spec) {
+        Settings settings = plugin.settings();
+        Instant now = Instant.now();
+        Instant resolved;
+        try {
+            resolved = OpenTimeParser.resolve(spec, settings.zone(), now);
+        } catch (IllegalArgumentException ex) {
+            return ex.getMessage();
+        }
+        if (!resolved.isAfter(now)) {
+            return "that time has already passed";
+        }
+
+        openAt = resolved;
+        misconfigured = false;
+        state.arm(resolved.toEpochMilli(), ScheduleState.MANUAL, settings.zoneRaw());
+        state.save();
+        firedWarnings.clear();
+        preMarkPassedWarnings();
+        return null;
     }
 
     /** Re-locks the End and re-arms from the current config. */

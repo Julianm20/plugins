@@ -16,6 +16,13 @@ import java.util.logging.Logger;
  */
 public final class ScheduleState {
 
+    /**
+     * Marker stored in {@code resolved-from} when the time was set in-game with
+     * /endscheduler settime. A manual time outranks config.yml and survives restarts
+     * and reloads; /endscheduler lock re-arms from config and clears it.
+     */
+    public static final String MANUAL = "<set in-game>";
+
     private final File file;
     private final Logger logger;
 
@@ -63,6 +70,15 @@ public final class ScheduleState {
         return openAtMillis > 0
                 && source.equals(configuredSource)
                 && timezone.equals(configuredZone);
+    }
+
+    /** True when the opening time was set in-game rather than read from config.yml. */
+    public boolean isManual() {
+        return openAtMillis > 0 && MANUAL.equals(source);
+    }
+
+    public String source() {
+        return source;
     }
 
     public long openAtMillis() {

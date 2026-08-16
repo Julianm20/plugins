@@ -194,7 +194,12 @@ longer matches what `state.yml` was resolved from, so it re-arms.
 `PlayerTeleportEvent` are handled — Bukkit gives portal events their own handler list, so
 one without the other leaves a hole), players get a message with the remaining time, and
 anyone who logs in inside The End is moved to the overworld spawn
-(`evict-players-on-join`). Staff with `endscheduler.bypass` (op) can always get in.
+(`evict-players-on-join`).
+
+The lock applies to **everyone, including ops**. `endscheduler.bypass` defaults to
+`false` and is not granted to operators automatically — otherwise the one person most
+likely to test the lock is the one person it does not apply to. Grant it explicitly if
+you want staff to scout early; `/endscheduler open` is the normal way in.
 
 **Countdown** warnings default to 60/30/10/5/1 minutes plus a 10-second countdown; empty
 lists disable them.
@@ -204,10 +209,22 @@ lists disable them.
 | Command | Permission | Default |
 |---|---|---|
 | `/endstatus` | `endscheduler.status` | everyone |
-| `/endscheduler status\|open\|lock\|reload` | `endscheduler.admin` | op |
+| `/endscheduler status\|open\|lock\|settime\|reload` | `endscheduler.admin` | op |
 
 `open` forces it open now with the full announcement; `lock` re-locks and re-arms from
 config, moving anyone currently in The End back out.
+
+**Setting the time in-game**, without editing config:
+
+```
+/endscheduler settime SUNDAY 18:00
+/endscheduler settime 2026-08-23 18:00
+```
+
+This re-locks The End and moves anyone inside back out. A time set this way outranks
+`open-time` in config.yml and survives restarts and reloads — `/endscheduler lock`
+discards it and goes back to the config value. Times in the past are rejected rather
+than silently opening.
 
 If `open-time` is unreadable the End stays **locked** and says so in `/endstatus` and the
 console, rather than silently unlocking — `/endscheduler open` is the escape hatch.

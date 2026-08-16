@@ -13,7 +13,7 @@ commands:
     permission: endscheduler.status
   endscheduler:
     description: Admin controls for the End schedule.
-    usage: /endscheduler <status|open|lock|reload>
+    usage: /endscheduler <status|open|lock|settime <when>|reload>
     permission: endscheduler.admin
 
 permissions:
@@ -21,8 +21,9 @@ permissions:
     description: Use /endstatus.
     default: true
   endscheduler.bypass:
-    description: Enter The End while it is locked.
-    default: op
+    description: Enter The End while it is locked. NOT granted to ops automatically -
+      grant it explicitly if you want staff to get in early.
+    default: false
   endscheduler.admin:
     description: Force open, re-lock and reload the schedule.
     default: op

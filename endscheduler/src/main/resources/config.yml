@@ -20,6 +20,12 @@ end:
   # following Sunday. To change the schedule, edit this value and run
   # /endscheduler reload - the new time is picked up because it no longer matches
   # what state.yml was resolved from.
+  #
+  # You can also set it in-game without touching this file:
+  #   /endscheduler settime SUNDAY 18:00
+  #   /endscheduler settime 2026-08-23 18:00
+  # A time set in-game outranks this value and survives restarts. Run
+  # /endscheduler lock to throw it away and go back to what is written here.
   open-time: "SUNDAY 18:00"
 
   # IANA timezone id, e.g. America/Los_Angeles, Europe/London, UTC.
@@ -68,8 +74,11 @@ messages:
   countdown-seconds: "<light_purple>The End opens in <white>%seconds%<light_purple>..."
 
   # /endscheduler
-  admin-usage: "<gray>Usage: <white>/%label% status <gray>| <white>open <gray>| <white>lock <gray>| <white>reload"
+  admin-usage: "<gray>Usage: <white>/%label% status <gray>| <white>open <gray>| <white>lock <gray>| <white>settime [when] <gray>| <white>reload"
   admin-opened: "<green>The End is now open."
   admin-already-open: "<gray>The End is already open. Use <white>lock<gray> to close it again."
   admin-locked: "<green>The End is locked again. Opens in <white>%time%<green> (%date%)."
   admin-reloaded: "<green>EndScheduler config reloaded."
+  admin-settime: "<green>The End will now open in <white>%time%<green> (%date%). <gray>It is locked again until then."
+  admin-settime-failed: "<red>Couldn't use that time: %reason%."
+  admin-settime-usage: "<gray>Usage: <white>/%label% settime SUNDAY 18:00 <gray>or <white>/%label% settime 2026-08-23 18:00"
