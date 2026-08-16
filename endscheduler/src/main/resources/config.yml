@@ -1,0 +1,75 @@
+# ============================================================================
+#  EndScheduler
+# ============================================================================
+#  Message formatting uses MiniMessage tags: <red>, <gold>, <bold>, ...
+#  Placeholders are wrapped in percent signs, e.g. %time%.
+#  Set any message to "" to disable it.
+# ============================================================================
+
+end:
+  # false = the plugin does nothing at all and The End behaves normally.
+  enabled: true
+
+  # Two accepted formats:
+  #   "SUNDAY 18:00"       the next occurrence of that weekday and time
+  #   "2026-08-23 18:00"   one exact date and time
+  #
+  # The moment this resolves to is written to state.yml the first time the plugin
+  # starts, and re-used on every restart after that. That is what makes it
+  # restart-safe: a reboot at 18:05 on Sunday will not push the opening to the
+  # following Sunday. To change the schedule, edit this value and run
+  # /endscheduler reload - the new time is picked up because it no longer matches
+  # what state.yml was resolved from.
+  open-time: "SUNDAY 18:00"
+
+  # IANA timezone id, e.g. America/Los_Angeles, Europe/London, UTC.
+  timezone: "America/Los_Angeles"
+
+  # How the opening time is written out in messages.
+  date-format: "EEEE, MMM d 'at' h:mm a z"
+
+  # Move players who log in inside a locked End back to the overworld spawn.
+  # Matters if you install this plugin after players have already been to The End.
+  evict-players-on-join: true
+
+  # Countdown warnings before the opening. Empty lists disable them.
+  countdown:
+    minutes: [60, 30, 10, 5, 1]
+    seconds: [10, 5, 3, 2, 1]
+
+  # What happens the moment it opens.
+  announcement:
+    chat:
+      - "<dark_gray><strikethrough>                                        "
+      - "<gradient:#8f00ff:#00ffcc><bold>            THE END HAS OPENED!</bold></gradient>"
+      - "<gray>            The portal is live. Good luck."
+      - "<dark_gray><strikethrough>                                        "
+    title: "<light_purple><bold>THE END HAS OPENED"
+    subtitle: "<gray>Good luck out there"
+    # Minecraft sound name, "" for silence.
+    sound: "entity.ender_dragon.growl"
+
+# ---------------------------------------------------------------------------
+#  Messages
+# ---------------------------------------------------------------------------
+messages:
+  # Shown when a player tries to enter The End before it opens.
+  end-locked: "<red>The End is sealed. <gray>It opens in <white>%time%<gray> (%date%)."
+  evicted: "<gray>The End isn't open yet - sending you home."
+
+  # /endstatus
+  status-locked: "<light_purple>The End opens in <white>%time%<light_purple>. <gray>(%date%)"
+  status-open: "<green>The End is open."
+  status-disabled: "<gray>The End isn't on a schedule."
+  status-misconfigured: "<red>The End opening time is misconfigured - ask an admin to check the console."
+
+  # Countdown
+  countdown-minutes: "<light_purple>The End opens in <white>%minutes%<light_purple> minute(s)."
+  countdown-seconds: "<light_purple>The End opens in <white>%seconds%<light_purple>..."
+
+  # /endscheduler
+  admin-usage: "<gray>Usage: <white>/%label% status <gray>| <white>open <gray>| <white>lock <gray>| <white>reload"
+  admin-opened: "<green>The End is now open."
+  admin-already-open: "<gray>The End is already open. Use <white>lock<gray> to close it again."
+  admin-locked: "<green>The End is locked again. Opens in <white>%time%<green> (%date%)."
+  admin-reloaded: "<green>EndScheduler config reloaded."

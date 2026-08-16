@@ -1,0 +1,32 @@
+name: KillStreaks
+version: '${project.version}'
+main: io.github.julianm20.killstreaks.KillStreaksPlugin
+api-version: '1.21'
+author: julianm20
+description: PvP kill streaks with configurable milestones, rewards and anti-farming.
+
+commands:
+  streak:
+    description: View your current kill streak, another player's streak, or the leaderboard.
+    usage: /streak [player|top]
+    aliases: [killstreak]
+    permission: killstreaks.use
+  streakadmin:
+    description: Admin controls for kill streaks.
+    usage: /streakadmin <set <player> <amount> | reset <player> | resetall confirm | reload>
+    aliases: [ksadmin]
+    permission: killstreaks.admin
+
+permissions:
+  killstreaks.use:
+    description: View your own kill streak.
+    default: true
+  killstreaks.top:
+    description: View the kill streak leaderboard.
+    default: true
+  killstreaks.others:
+    description: View another player's kill streak.
+    default: op
+  killstreaks.admin:
+    description: Set, reset and reload kill streaks.
+    default: op

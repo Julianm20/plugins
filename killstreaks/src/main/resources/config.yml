@@ -1,0 +1,141 @@
+# ============================================================================
+#  KillStreaks
+# ============================================================================
+#  Message formatting uses MiniMessage tags: <red>, <gold>, <bold>, <gradient:..>
+#  Full tag list: https://docs.advntr.dev/minimessage/format.html
+#  Placeholders are wrapped in percent signs, e.g. %player%.
+#  Set any message to "" to disable it.
+# ============================================================================
+
+# Worlds where streaks are ignored entirely (no counting, no resetting).
+# Useful for spawn/lobby/creative worlds.
+disabled-worlds:
+  - lobby
+
+# Should dying to lava/fall/mobs/etc. reset a streak?
+# false = only PvP deaths reset your streak.
+reset-on-non-pvp-death: true
+
+# Should logging out clear a streak? Stops people from parking a big streak offline.
+reset-on-quit: false
+
+# Broadcast "streak ended" only when the lost streak was at least this big.
+# Smaller losses get a quiet private message instead.
+announce-streak-ended-from: 3
+
+# How many players /streak top shows.
+leaderboard-size: 10
+
+# How often streak data is written to data.yml (also always saved on shutdown).
+save-interval-seconds: 300
+
+# ---------------------------------------------------------------------------
+#  Anti-farming
+# ---------------------------------------------------------------------------
+#  Killing the same player over and over stops counting toward your streak.
+#  The kill still counts for lifetime stats, it just gives no streak credit
+#  and no rewards.
+anti-farm:
+  enabled: true
+  # Rolling window in seconds.
+  window-seconds: 600
+  # How many kills on the SAME victim count inside that window.
+  # 1 = every streak kill must be a different player.
+  max-kills-per-victim: 2
+  # Tell the killer their kill didn't count?
+  notify-killer: true
+
+# ---------------------------------------------------------------------------
+#  Milestones
+# ---------------------------------------------------------------------------
+#  Keys are the exact streak number that triggers the entry. Add or remove
+#  as many as you like. Placeholders: %player% / %killer%, %victim%, %streak%.
+#
+#  announce        broadcast to the whole server
+#  announcement    the broadcast text
+#  killer-message  private message to the player who earned it
+#  sound           Minecraft sound name, e.g. entity.player.levelup ("" = none)
+#  commands        run from console as rewards (no leading slash needed)
+# ---------------------------------------------------------------------------
+milestones:
+  '3':
+    announce: true
+    announcement: "<gray>[<gold>Streak<gray>] <yellow>%player% <gray>is on a <yellow>3<gray> kill streak!"
+    killer-message: "<gold>Kill streak: <yellow>3<gold>. Keep going!"
+    sound: "entity.experience_orb.pickup"
+    sound-volume: 1.0
+    sound-pitch: 1.2
+    commands: []
+
+  '5':
+    announce: true
+    announcement: "<gray>[<gold>Streak<gray>] <gold>%player% <gray>is on a <gold>5<gray> kill streak!"
+    killer-message: "<gold>Kill streak: <yellow>5<gold>. Here's a little something."
+    sound: "entity.player.levelup"
+    sound-volume: 1.0
+    sound-pitch: 1.0
+    commands:
+      - "give %player% golden_apple 1"
+
+  '10':
+    announce: true
+    announcement: "<gray>[<gold>Streak<gray>] <red>%player% <yellow>is on a <red><bold>10<reset><yellow> kill streak! Somebody stop them!"
+    killer-message: "<gold>Kill streak: <red>10<gold>. You're a problem."
+    sound: "ui.toast.challenge_complete"
+    sound-volume: 1.0
+    sound-pitch: 1.0
+    commands:
+      - "give %player% golden_apple 2"
+      - "give %player% ender_pearl 4"
+
+  '15':
+    announce: true
+    announcement: "<gray>[<gold>Streak<gray>] <red><bold>%player%<reset> <yellow>is on a <red><bold>15<reset><yellow> kill streak!"
+    killer-message: "<gold>Kill streak: <red>15<gold>."
+    sound: "ui.toast.challenge_complete"
+    sound-volume: 1.0
+    sound-pitch: 0.9
+    commands:
+      - "give %player% enchanted_golden_apple 1"
+
+  '20':
+    announce: true
+    announcement: "<gradient:#ff0000:#ffaa00><bold>%player% IS ON A 20 KILL STREAK!</bold></gradient>"
+    killer-message: "<gold>Kill streak: <red><bold>20<reset><gold>. Absolutely unreal."
+    sound: "entity.ender_dragon.growl"
+    sound-volume: 1.0
+    sound-pitch: 1.0
+    commands:
+      - "give %player% enchanted_golden_apple 2"
+      - "effect give %player% strength 60 0"
+
+# ---------------------------------------------------------------------------
+#  Messages
+# ---------------------------------------------------------------------------
+messages:
+  # Shown on every counted kill. Set to "" if you find it noisy.
+  kill-counted: "<gray>Killed <white>%victim%<gray>. Streak: <yellow>%streak%<gray>."
+  anti-farm-blocked: "<gray>You've killed <white>%victim%<gray> too recently, so that one didn't count toward your streak."
+
+  streak-lost: "<gray>Your streak of <yellow>%streak%<gray> ended."
+  streak-ended: "<gray>[<gold>Streak<gray>] <yellow>%player%<gray>'s streak of <yellow>%streak%<gray> ended."
+  streak-ended-by-player: "<gray>[<gold>Streak<gray>] <yellow>%killer% <gray>ended <yellow>%player%<gray>'s streak of <yellow>%streak%<gray>!"
+
+  streak-self: "<gold>Your streak: <yellow>%streak% <gray>| best <yellow>%best% <gray>| <yellow>%kills%<gray>K/<yellow>%deaths%<gray>D"
+  streak-other: "<gold>%player%<gray>: streak <yellow>%streak% <gray>| best <yellow>%best% <gray>| <yellow>%kills%<gray>K/<yellow>%deaths%<gray>D"
+
+  leaderboard-header: "<gold><bold>Top kill streaks"
+  leaderboard-entry: "<gray>%rank%. <white>%player% <gray>- best <yellow>%best% <gray>(now <yellow>%streak%<gray>)"
+  leaderboard-empty: "<gray>Nobody has a streak yet."
+
+  unknown-player: "<red>No streak data for <white>%player%<red>."
+  not-a-number: "<red>'%input%' is not a valid number."
+  no-permission: "<red>You don't have permission to do that."
+  players-only: "<red>Only players can use that. Try /streak [player] instead."
+
+  admin-usage: "<gray>Usage: <white>/%label% set [player] [amount] <gray>| <white>reset [player] <gray>| <white>resetall confirm <gray>| <white>reload"
+  admin-set: "<green>Set <white>%player%<green>'s streak to <white>%streak%<green>."
+  admin-reset: "<green>Reset <white>%player%<green>'s streak."
+  admin-resetall-confirm: "<red>This resets every streak on the server. Run <white>/%label% resetall confirm<red> to continue."
+  admin-resetall: "<green>Reset <white>%count%<green> streak(s)."
+  reloaded: "<green>Config reloaded. <white>%milestones%<green> milestone(s) active."
