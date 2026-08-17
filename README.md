@@ -9,6 +9,7 @@ own repository later without touching build config.
 | ⚔️ [KillStreaks](#-killstreaks) | `KillStreaks-1.0.0.jar` | PvP kill streaks, milestones, configurable rewards, anti-farming |
 | 👥 [HiddenTeams](#-hiddenteams) | `HiddenTeams-1.0.0.jar` | Private teams nobody outside the team can detect |
 | 🌌 [EndScheduler](#-endscheduler) | `EndScheduler-1.0.0.jar` | Keeps The End locked until a scheduled opening |
+| 📊 [SMPStats](#-smpstats) | `SMPStats-1.0.0.jar` | Player profiles, plus the API future plugins feed into |
 
 Target: **Paper 1.21.x, Java 21**.
 
@@ -228,6 +229,83 @@ than silently opening.
 
 If `open-time` is unreadable the End stays **locked** and says so in `/endstatus` and the
 console, rather than silently unlocking — `/endscheduler open` is the escape hatch.
+
+---
+
+## 📊 SMPStats
+
+One player profile that everything else feeds into. `/stats` today; the GUI, leaderboards
+and spawn holograms are deliberately left for later, because **recording is
+time-sensitive and display is not** — a stat not being counted on launch day is lost
+forever, whereas a leaderboard added next month will happily show data from day one.
+
+### It reads vanilla statistics rather than re-counting them
+
+Minecraft has counted playtime, distance, kills, deaths, damage and fishing since the
+world was created. Re-implementing that with our own listeners would be slower, would
+start from zero, and would drift from what the in-game statistics screen says. So those
+are copied out of vanilla:
+
+| From vanilla | Hand-tracked here |
+|---|---|
+| Playtime, distance travelled | Kill streak, best streak |
+| Players killed, deaths | Assists, critical hits, deaths to mobs |
+| Damage dealt/taken | Blocks mined/placed, crops harvested |
+| Mobs killed, fish caught | Items collected, animals killed, AFK time, favourite weapon |
+
+A useful side effect: anyone who played before you installed this already has a populated
+profile.
+
+### The API
+
+This is the point of the plugin. Other plugins push statistics in by string key, so
+adding Bounties or KOTH later needs **no change to SMPStats**.
+
+```java
+// Your plugin.yml:  softdepend: [SMPStats]
+RegisteredServiceProvider<StatsAPI> rsp =
+        Bukkit.getServicesManager().getRegistration(StatsAPI.class);
+StatsAPI stats = rsp == null ? null : rsp.getProvider();
+
+// Once, on enable — makes it show up in /stats automatically:
+stats.registerStat(new StatDefinition("koth_captures", "KOTH Captures", "👑",
+        StatCategory.SERVER, StatFormat.NUMBER));
+
+// Then whenever it happens:
+stats.increment(player.getUniqueId(), "koth_captures");
+stats.increment(player.getUniqueId(), "bounty_earnings", 5000);
+stats.recordMax(player.getUniqueId(), "longest_koth_hold", seconds);
+```
+
+Because it goes through Bukkit's services manager, your plugin has no hard dependency on
+this one and still loads if SMPStats is absent. `StatsAPI#top(key, limit)` is already
+there for when leaderboards get built. All methods are thread-safe.
+
+`StatKeys` reserves names for the plugins that don't exist yet — `bounties_claimed`,
+`koth_wins`, `wars_won`, `contracts_completed`, `revenge_kills` and friends — so those
+eventually agree on spelling instead of each inventing their own. They read zero and stay
+hidden from the profile until something writes them (`show-empty-stats: true` reveals
+them).
+
+### Commands
+
+| Command | Permission | Default |
+|---|---|---|
+| `/stats [player]` | `smpstats.use` / `smpstats.others` | everyone |
+| `/statsadmin reload\|reset <player>\|resetall confirm` | `smpstats.admin` | op |
+
+### Known overlap
+
+SMPStats counts its own kill streak as "kills since your last death". KillStreaks counts
+one that ignores farmed kills, so on a server where someone is farming, `/streak` and
+`/stats` can disagree. Wiring KillStreaks to push its authoritative number through the API
+needs a small shared API artifact so the two can share the interface at compile time —
+worth doing, not done yet.
+
+Not tracked, for lack of a source: 1v1 win/loss records (no duel system to define what a
+1v1 *is*), and anything belonging to the unbuilt plugins. The XP/level/rank progression
+from the profile mockup is a design decision — what earns XP and where the thresholds sit
+— rather than a statistic, so it is not implemented.
 
 ---
 

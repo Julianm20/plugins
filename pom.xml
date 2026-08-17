@@ -24,5 +24,6 @@
     <module>killstreaks</module>
     <module>hiddenteams</module>
     <module>endscheduler</module>
+    <module>smpstats</module>
   </modules>
 </project>

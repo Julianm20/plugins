@@ -1,0 +1,28 @@
+name: SMPStats
+version: '${project.version}'
+main: io.github.julianm20.smpstats.SMPStatsPlugin
+api-version: '1.21'
+author: julianm20
+description: Central player statistics, plus the API other plugins feed into.
+
+commands:
+  stats:
+    description: View a player profile.
+    usage: /stats [player]
+    aliases: [profile]
+    permission: smpstats.use
+  statsadmin:
+    description: Admin controls for statistics.
+    usage: /statsadmin <reload|reset <player>|resetall confirm>
+    permission: smpstats.admin
+
+permissions:
+  smpstats.use:
+    description: View your own profile.
+    default: true
+  smpstats.others:
+    description: View another player's profile.
+    default: true
+  smpstats.admin:
+    description: Reset statistics and reload the config.
+    default: op
