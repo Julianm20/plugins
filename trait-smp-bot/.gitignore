@@ -1,0 +1,13 @@
+node_modules/
+dist/
+
+# Secrets - never commit these
+.env
+.env.local
+.env.*.local
+
+# Runtime state written by the bot
+data/
+*.log
+
+.DS_Store

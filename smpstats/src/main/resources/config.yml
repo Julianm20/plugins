@@ -31,6 +31,60 @@ afk-threshold-seconds: 300
 show-empty-stats: false
 
 # ---------------------------------------------------------------------------
+#  Profile window
+# ---------------------------------------------------------------------------
+#  /stats opens a chest-style window. It is strictly look-only: every click,
+#  drag and hopper interaction on it is cancelled, so nothing can be taken out
+#  of it and nothing can be put into it.
+#
+#  Set enabled: false to go back to the plain chat profile.
+gui:
+  enabled: true
+  title: "<dark_gray>%player%'s Profile"
+  # 3 to 6. Each row past the first and last holds 7 statistics.
+  rows: 6
+  filler: gray_stained_glass_pane
+  # Used for any statistic without an icon below, including ones registered by
+  # other plugins through the API.
+  default-icon: paper
+  no-weapon: "None yet"
+
+  head-name: "<gold><bold>%player%"
+  head-lore:
+    - "<gray>K/D <white>%kd%"
+    - "<gray>Favourite weapon <white>%weapon%"
+  stat-name: "<yellow>%icon% %name%"
+  stat-value: "<white>%value%"
+  stat-category: "<dark_gray>%category%"
+
+  # Item shown for each statistic. Any Minecraft item name works.
+  icons:
+    player_kills: diamond_sword
+    deaths: skeleton_skull
+    current_streak: blaze_powder
+    best_streak: golden_apple
+    assists: shield
+    damage_dealt: iron_axe
+    damage_taken: redstone
+    critical_hits: arrow
+    deaths_by_mob: zombie_head
+    playtime_ticks: clock
+    distance_cm: leather_boots
+    blocks_mined: iron_pickaxe
+    blocks_placed: bricks
+    items_collected: chest
+    fish_caught: fishing_rod
+    crops_harvested: wheat
+    animals_killed: beef
+    mobs_killed: rotten_flesh
+    afk_seconds: white_bed
+    # Reserved for plugins not built yet
+    bounties_claimed: gold_ingot
+    koth_captures: golden_helmet
+    wars_won: iron_sword
+    contracts_completed: writable_book
+
+# ---------------------------------------------------------------------------
 #  Messages
 # ---------------------------------------------------------------------------
 messages:

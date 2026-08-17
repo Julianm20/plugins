@@ -42,3 +42,27 @@ jobs:
           # Fails the run if the build somehow produced no JARs.
           if-no-files-found: error
           retention-days: 30
+
+  bot:
+    name: Build Discord bot
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: trait-smp-bot
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: trait-smp-bot/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck and compile
+        run: npm run build

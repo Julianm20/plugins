@@ -3,8 +3,10 @@ package io.github.julianm20.smpstats;
 import io.github.julianm20.smpstats.api.StatsAPI;
 import io.github.julianm20.smpstats.command.StatsAdminCommand;
 import io.github.julianm20.smpstats.command.StatsCommand;
+import io.github.julianm20.smpstats.gui.StatsGui;
 import io.github.julianm20.smpstats.listener.ActivityListener;
 import io.github.julianm20.smpstats.listener.CombatListener;
+import io.github.julianm20.smpstats.listener.GuiListener;
 import io.github.julianm20.smpstats.listener.WorldListener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -21,6 +23,7 @@ public final class SMPStatsPlugin extends JavaPlugin {
     private volatile Settings settings;
     private StatsService stats;
     private CombatListener combatListener;
+    private StatsGui gui;
     private ActivityListener activityListener;
     private BukkitTask saveTask;
     private BukkitTask afkTask;
@@ -35,11 +38,13 @@ public final class SMPStatsPlugin extends JavaPlugin {
         // Published so other plugins can find it without a compile-time link to us.
         Bukkit.getServicesManager().register(StatsAPI.class, stats, this, ServicePriority.Normal);
 
+        this.gui = new StatsGui(this);
         this.combatListener = new CombatListener(this);
         this.activityListener = new ActivityListener(this);
         getServer().getPluginManager().registerEvents(combatListener, this);
         getServer().getPluginManager().registerEvents(activityListener, this);
         getServer().getPluginManager().registerEvents(new WorldListener(this), this);
+        getServer().getPluginManager().registerEvents(new GuiListener(), this);
 
         StatsCommand statsCommand = new StatsCommand(this);
         register("stats", statsCommand, statsCommand);
@@ -84,6 +89,10 @@ public final class SMPStatsPlugin extends JavaPlugin {
 
     public CombatListener combatListener() {
         return combatListener;
+    }
+
+    public StatsGui gui() {
+        return gui;
     }
 
     public ActivityListener activityListener() {

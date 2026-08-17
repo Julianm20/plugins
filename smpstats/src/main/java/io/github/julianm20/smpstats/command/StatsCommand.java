@@ -45,9 +45,16 @@ public final class StatsCommand implements CommandExecutor, TabCompleter {
                 send(sender, "players-only", Msg.map());
                 return true;
             }
-            // Make sure the numbers are current rather than as of the last sync.
-            plugin.activityListener().syncOnline();
             target = plugin.stats().stats(player);
+        }
+
+        // Pull fresh vanilla numbers so the profile is current, not as of the last sync.
+        plugin.activityListener().syncOnline();
+
+        // Players get the window; console still gets the text version.
+        if (plugin.settings().guiEnabled() && sender instanceof Player viewer) {
+            plugin.gui().open(viewer, target);
+            return true;
         }
 
         render(sender, target);
