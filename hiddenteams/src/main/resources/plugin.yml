@@ -1,0 +1,29 @@
+name: HiddenTeams
+version: '${project.version}'
+main: io.github.julianm20.hiddenteams.HiddenTeamsPlugin
+api-version: '1.21'
+author: julianm20
+description: Private teams. Nobody outside a team can tell that it exists.
+
+commands:
+  team:
+    description: Create and manage your team.
+    usage: /team <create|invite|accept|deny|leave|kick|list|chat|transfer|rename|disband>
+    permission: hiddenteams.use
+  teamchat:
+    description: Send a message to your team, or toggle team chat.
+    usage: /teamchat [message]
+    aliases: [tc]
+    permission: hiddenteams.use
+  teamadmin:
+    description: Staff view of teams.
+    usage: /teamadmin <list|info <player>|disband <player>|reload>
+    permission: hiddenteams.admin
+
+permissions:
+  hiddenteams.use:
+    description: Use team commands.
+    default: true
+  hiddenteams.admin:
+    description: See and manage every team.
+    default: op

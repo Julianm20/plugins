@@ -1,0 +1,29 @@
+name: EndScheduler
+version: '${project.version}'
+main: io.github.julianm20.endscheduler.EndSchedulerPlugin
+api-version: '1.21'
+author: julianm20
+description: Keeps The End locked until a scheduled opening time, then announces it.
+
+commands:
+  endstatus:
+    description: Check when The End opens.
+    usage: /endstatus
+    aliases: [endtime]
+    permission: endscheduler.status
+  endscheduler:
+    description: Admin controls for the End schedule.
+    usage: /endscheduler <status|open|lock|settime <when>|reload>
+    permission: endscheduler.admin
+
+permissions:
+  endscheduler.status:
+    description: Use /endstatus.
+    default: true
+  endscheduler.bypass:
+    description: Enter The End while it is locked. NOT granted to ops automatically -
+      grant it explicitly if you want staff to get in early.
+    default: false
+  endscheduler.admin:
+    description: Force open, re-lock and reload the schedule.
+    default: op

@@ -1,0 +1,106 @@
+# ============================================================================
+#  SMPStats
+# ============================================================================
+#  Central player profile. Other plugins push their own statistics in through
+#  the API, so bounties, KOTH wins and war records will appear here once those
+#  plugins exist - no change needed to this file.
+#
+#  Statistics Minecraft already tracks (playtime, distance, kills, deaths,
+#  damage, fishing) are read from vanilla rather than counted again, so the
+#  numbers match the in-game statistics screen and already cover players who
+#  were here before this plugin was installed.
+#
+#  Message formatting uses MiniMessage tags. Placeholders use %percent%.
+#  Set any message to "" to disable it.
+# ============================================================================
+
+# How often statistics are written to stats.yml (also always saved on shutdown).
+save-interval-seconds: 300
+
+# A player who damaged someone within this many seconds of their death gets an
+# assist, as long as they were not the one who landed the kill.
+assist-window-seconds: 10
+
+# AFK tracking. A player counts as AFK once they have not moved between blocks
+# for this long.
+track-afk: true
+afk-threshold-seconds: 300
+
+# Show statistics still sitting at zero. Off by default so the profile does not
+# list a wall of empty rows for plugins you have not built yet.
+show-empty-stats: false
+
+# ---------------------------------------------------------------------------
+#  Profile window
+# ---------------------------------------------------------------------------
+#  /stats opens a chest-style window. It is strictly look-only: every click,
+#  drag and hopper interaction on it is cancelled, so nothing can be taken out
+#  of it and nothing can be put into it.
+#
+#  Set enabled: false to go back to the plain chat profile.
+gui:
+  enabled: true
+  title: "<dark_gray>%player%'s Profile"
+  # 3 to 6. Each row past the first and last holds 7 statistics.
+  rows: 6
+  filler: gray_stained_glass_pane
+  # Used for any statistic without an icon below, including ones registered by
+  # other plugins through the API.
+  default-icon: paper
+  no-weapon: "None yet"
+
+  head-name: "<gold><bold>%player%"
+  head-lore:
+    - "<gray>K/D <white>%kd%"
+    - "<gray>Favourite weapon <white>%weapon%"
+  stat-name: "<yellow>%icon% %name%"
+  stat-value: "<white>%value%"
+  stat-category: "<dark_gray>%category%"
+
+  # Item shown for each statistic. Any Minecraft item name works.
+  icons:
+    player_kills: diamond_sword
+    deaths: skeleton_skull
+    current_streak: blaze_powder
+    best_streak: golden_apple
+    assists: shield
+    damage_dealt: iron_axe
+    damage_taken: redstone
+    critical_hits: arrow
+    deaths_by_mob: zombie_head
+    playtime_ticks: clock
+    distance_cm: leather_boots
+    blocks_mined: iron_pickaxe
+    blocks_placed: bricks
+    items_collected: chest
+    fish_caught: fishing_rod
+    crops_harvested: wheat
+    animals_killed: beef
+    mobs_killed: rotten_flesh
+    afk_seconds: white_bed
+    # Reserved for plugins not built yet
+    bounties_claimed: gold_ingot
+    koth_captures: golden_helmet
+    wars_won: iron_sword
+    contracts_completed: writable_book
+
+# ---------------------------------------------------------------------------
+#  Messages
+# ---------------------------------------------------------------------------
+messages:
+  profile-header: "<dark_gray><strikethrough>                    </strikethrough> <gold><bold>%player%</bold> <dark_gray><strikethrough>                    "
+  profile-category: "<yellow><bold>%category%"
+  profile-entry: "<gray> %icon% %name% <dark_gray>· <white>%value%"
+  profile-kd: "<gray> 📈 K/D <dark_gray>· <white>%value%"
+  profile-weapon: "<gray> 🗡 Favourite Weapon <dark_gray>· <white>%weapon%"
+  profile-footer: "<dark_gray><strikethrough>                                                  "
+
+  unknown-player: "<red>No statistics for <white>%player%<red>."
+  no-permission: "<red>You don't have permission to do that."
+  players-only: "<red>Only players can use that. Try /stats [player] instead."
+
+  admin-usage: "<gray>Usage: <white>/%label% reload <gray>| <white>reset [player] <gray>| <white>resetall confirm"
+  admin-reloaded: "<green>SMPStats config reloaded."
+  admin-reset: "<green>Reset statistics for <white>%player%<green>."
+  admin-resetall-confirm: "<red>This wipes every statistic on the server. Run <white>/%label% resetall confirm<red> to continue."
+  admin-resetall: "<green>Wiped statistics for <white>%count%<green> player(s)."

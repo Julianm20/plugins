@@ -1,0 +1,155 @@
+# ============================================================================
+#  HiddenTeams
+# ============================================================================
+#  Teams that nobody outside the team can detect.
+#
+#  What is deliberately NOT here, and should stay that way:
+#    - no public team list
+#    - no team name in chat, tab list or nametags
+#    - no command that reports whether some other player is on a team
+#    - no unique team names (a "name taken" error would leak that a team exists)
+#
+#  Message formatting uses MiniMessage tags: <red>, <gold>, <bold>, ...
+#  Placeholders are wrapped in percent signs, e.g. %player%.
+#  Set any message to "" to disable it.
+# ============================================================================
+
+# Maximum players per team, owner included.
+max-team-size: 4
+
+# Team name rules. Names may contain letters, numbers, spaces, - and _.
+min-name-length: 3
+max-name-length: 16
+blocked-names: []
+
+# When true only the team owner may send invites.
+invite-requires-owner: false
+
+# How long an invite stays valid.
+invite-expiry-seconds: 120
+
+# Anti-probing. When true, inviting somebody who is already in another team gives the
+# exact same response as a successful invite, so /team invite cannot be used to work
+# out who is on a team. Turn it off only on a small private server where you would
+# rather have precise feedback than secrecy.
+stealth-invites: true
+
+# Can teammates damage each other?
+friendly-fire: false
+# Also block arrows, tridents, splash potions and other projectiles between teammates.
+block-teammate-projectiles: true
+
+# Tell the team when somebody joins, leaves, is kicked, or the team is renamed.
+notify-team-on-membership-change: true
+# Tell the team when a member logs in or out.
+notify-team-on-connect: true
+
+# Write team chat to the server console/log. Off by default: team chat is meant to be
+# private, and console output often ends up somewhere less private than you expect.
+log-team-chat: false
+
+# Allow /teamadmin at all. Even when true it still requires the hiddenteams.admin
+# permission (op by default).
+admin-commands: true
+
+# Team chat layout. %message% is replaced with what the player typed, safely - player
+# text is never interpreted as formatting.
+chat-format: "<dark_aqua>[Team] <white>%player%<dark_aqua>: <gray>%message%"
+
+# Shown by /team with no arguments.
+help:
+  - "<dark_aqua><bold>Teams"
+  - "<gray>/team create [name] <dark_gray>- start a team"
+  - "<gray>/team invite [player] <dark_gray>- invite someone"
+  - "<gray>/team accept [player] <dark_gray>- accept an invite"
+  - "<gray>/team deny [player] <dark_gray>- decline an invite"
+  - "<gray>/team list <dark_gray>- see your team"
+  - "<gray>/team chat <dark_gray>- toggle team chat (or /tc [message])"
+  - "<gray>/team leave <dark_gray>- leave your team"
+  - "<gray>/team kick [player] <dark_gray>- owner only"
+  - "<gray>/team transfer [player] <dark_gray>- hand over the team"
+  - "<gray>/team rename [name] <dark_gray>- owner only"
+  - "<gray>/team disband confirm <dark_gray>- owner only"
+
+# ---------------------------------------------------------------------------
+#  Messages
+# ---------------------------------------------------------------------------
+messages:
+  players-only: "<red>Only players can use that."
+  not-in-team: "<red>You're not in a team. Use <white>/team create [name]<red> to start one."
+  already-in-team: "<red>You're already in a team. Leave it first."
+  owner-only: "<red>Only the team owner can do that."
+
+  # Team creation
+  usage-create: "<gray>Usage: <white>/team create [name]"
+  name-length: "<red>Team names must be between <white>%min%<red> and <white>%max%<red> characters."
+  name-characters: "<red>Team names can only use letters, numbers, spaces, - and _."
+  name-blocked: "<red>That team name isn't allowed."
+  team-created: "<green>Team <white>%team%<green> created. Up to <white>%max%<green> members - invite them with <white>/team invite [player]<green>."
+
+  # Invites
+  usage-invite: "<gray>Usage: <white>/team invite [player]"
+  cannot-invite-self: "<red>You can't invite yourself."
+  player-not-online: "<red>%player% isn't online."
+  already-in-your-team: "<red>%player% is already in your team."
+  player-unavailable: "<red>%player% can't be invited right now."
+  team-full: "<red>Your team is full (<white>%max%<red>)."
+  invite-sent: "<green>Invite sent to <white>%player%<green>."
+  invite-received: "<gold>%player% invited you to their team <white>%team%<gold>. <gray>Use <white>/team accept %player%<gray> or <white>/team deny %player%<gray> within %seconds%s."
+  no-pending-invites: "<red>You don't have any pending invites."
+  no-invite-from: "<red>You don't have a pending invite from %player%."
+  multiple-invites: "<gray>You have invites from: <white>%players%<gray>. Use <white>/team accept [player]<gray>."
+  invite-expired: "<red>That invite is no longer valid."
+  team-full-cannot-join: "<red>That team is full."
+  joined-team: "<green>You joined <white>%team%<green>."
+  invite-denied: "<gray>Declined the invite from <white>%player%<gray>."
+  invite-denied-by: "<gray>%player% declined your team invite."
+
+  # Membership changes (team-only)
+  member-joined: "<green>%player% joined your team."
+  member-left: "<gray>%player% left your team."
+  member-kicked: "<gray>%player% was removed from your team."
+  kicked-member: "<green>Removed <white>%player%<green> from the team."
+  you-were-kicked: "<red>You were removed from <white>%team%<red>."
+  cannot-kick-self: "<red>You can't kick yourself. Use <white>/team disband confirm<red> instead."
+  not-in-your-team: "<red>%player% isn't in your team."
+  usage-kick: "<gray>Usage: <white>/team kick [player]"
+  left-team: "<gray>You left <white>%team%<gray>."
+  owner-must-transfer: "<red>You own this team. Use <white>/team transfer [player]<red> or <white>/team disband confirm<red>."
+  teammate-connected: "<dark_aqua>%player% <gray>came online."
+  teammate-disconnected: "<dark_aqua>%player% <gray>went offline."
+
+  # Ownership
+  usage-transfer: "<gray>Usage: <white>/team transfer [player]"
+  already-owner: "<red>You already own the team."
+  transferred: "<green>%player% now owns the team."
+  owner-changed: "<gold>%player% is now the team owner."
+  usage-rename: "<gray>Usage: <white>/team rename [name]"
+  team-renamed: "<green>Your team is now called <white>%team%<green>."
+  disband-confirm: "<red>This deletes <white>%team%<red> for everyone. Run <white>/team disband confirm<red> to continue."
+  team-disbanded: "<red>Team <white>%team%<red> was disbanded."
+
+  # Roster
+  team-list-header: "<dark_aqua><bold>%team% <reset><gray>(%size%/%max%)"
+  team-list-entry: "<gray>- <white>%player% <dark_gray>%role% %status%"
+  role-owner: "<gold>[owner]"
+  role-member: ""
+  status-online: "<green>online"
+  status-offline: "<dark_gray>offline"
+
+  # Team chat
+  team-chat-on: "<dark_aqua>Team chat on. <gray>Everything you type goes to your team. Run it again to turn it off."
+  team-chat-off: "<gray>Team chat off."
+
+  # Combat
+  friendly-fire-blocked: "<gray>%player% is on your team."
+
+  # Admin
+  admin-disabled: "<red>Admin team commands are disabled in the config."
+  admin-usage: "<gray>Usage: <white>/%label% list <gray>| <white>info [player] <gray>| <white>disband [player] <gray>| <white>reload"
+  admin-reloaded: "<green>HiddenTeams config reloaded."
+  admin-list-header: "<gold>Teams: <white>%count%"
+  admin-list-entry: "<gray>- <white>%team% <gray>owner <white>%owner% <gray>(%size%/%max%)"
+  admin-member-entry: "<dark_gray>  - <gray>%player% <dark_gray>%uuid%"
+  admin-no-team: "<red>%player% isn't in a team (or isn't a known player)."
+  admin-disbanded: "<green>Disbanded <white>%team%<green>."
